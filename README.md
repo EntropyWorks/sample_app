@@ -3,13 +3,15 @@ sample_app - A Sample CoreOS ELKstack application
 
 This is a sample application for running on CoreOS and is for the most part based off of the fine work by Marcel DeGraaf in his two blog posts:
 
-Part 1: [http://marceldegraaf.net/2014/04/24/experimenting-with-coreos-confd-etcd-fleet-and-cloudformation.html]
-Part 2: [http://marceldegraaf.net/2014/05/05/coreos-follow-up-sinatra-logstash-elasticsearch-kibana.html]
+Part1: http://marceldegraaf.net/2014/04/24/experimenting-with-coreos-confd-etcd-fleet-and-cloudformation.html
+
+Part2: http://marceldegraaf.net/2014/05/05/coreos-follow-up-sinatra-logstash-elasticsearch-kibana.html
 
 And his repositories contain files to back these two blog posts are:
 
-Part 1: [https://github.com/marceldegraaf/blog-coreos-1]
-Part 2: [https://github.com/marceldegraaf/blog-coreos-2]
+Part 1: https://github.com/marceldegraaf/blog-coreos-1
+
+Part 2: https://github.com/marceldegraaf/blog-coreos-2
 
 ## Prerequisites
 
@@ -27,8 +29,10 @@ When you run ```vagrant up```, there will be three CoreOS boxes that are running
 
 To make sure that fleet can talk to other as well as make SSH to your hosts not require ```vagrant ssh```, run the following commands that first will add the vagrant hosts to ```~/.ssh/config``` as well as put the ssh key on all of the boxes. 
 
-```/path/vagrant-coreos $ vagrant ssh-config>> ~/.ssh/config```
-```/path/vagrant-coreos $ scp -i ~/.vagrant.d/insecure_private_key ~/.vagrant.d/insecure_private_key core@core-02:/home/core/.ssh```
+```
+/path/vagrant-coreos $ vagrant ssh-config>> ~/.ssh/config
+/path/vagrant-coreos $ scp -i ~/.vagrant.d/insecure_private_key ~/.vagrant.d/insecure_private_key core@core-02:/home/core/.ssh
+```
 
 
 ## Verify Fleet is running
@@ -73,7 +77,9 @@ The following steps can be run from one of the boxes or locally. The requirement
 
 ```$ git clone https://github.com/HPATG/sample_app```
 
-### Submit the Unit file for Elasticsearch
+### Unit file submission and starting 
+
+#### Elasticsearch 
 
 In the project repo, there will be a number of systemd unit files. These will have to be submitted and started. The first one is for Elasticsearch:
 
@@ -116,6 +122,8 @@ Nov 20 01:05:23 core-02 docker[23678]: [2014-11-20 01:05:23,349][INFO ][transpor
 Nov 20 01:05:26 core-02 docker[23678]: [2014-11-20 01:05:26,408][INFO ][cluster.service          ] [Tess-One] new_master [Tess-One][xoYqROQ8T86PUDYPgr3eCQ][006d83578c5a][inet[/10.0.0.11:9300]], reason: zen-disco-join (elected_as_master)
 ```
 
+#### Logstash
+
 The next service, Logstash, the same steps that were used for submitting, starting, and verifying the Elasticsearch service can be repeated:
 
 ```
@@ -139,6 +147,8 @@ logstash.service	ce81f0d7.../172.17.8.103	active	running
 ```
 
 Now browse to the IP address for the Elasticsearch web admin interface on port 9200. In this example, it would be http://172.17.8.102:9200/_plugin/kopf/
+
+#### Sinatra 
 
 In this case, 4 Sinatra services:
 
@@ -175,7 +185,7 @@ sinatra@5002.service	ce81f0d7.../172.17.8.103	active	running
 sinatra@5003.service	fee4602c.../172.17.8.101	active	running
 ```
 
-Nginx:
+#### Nginx
 
 ```
 core@core-02 ~/sample_app $ fleetctl submit unit_files/nginx.service
@@ -196,15 +206,17 @@ sinatra@5002.service	ce81f0d7.../172.17.8.103	active	running
 sinatra@5003.service	fee4602c.../172.17.8.101	active	running
 ```
 
-## Manually access the Sinatra web app
+### Using the app
+
+#### Manually access the Sinatra web app
 
 The nginx service is running on machine 78927354, 172.17.8.102 in this example. The web address for the application is simply http://172.17.8.102. Verify that it simply has an output of "Hello world!". 
 
-## Verify that the single access shows up in Kibana
+#### Verify that the single access shows up in Kibana
 
 The Elasticsearch service is also running on 172.17.8.102. To access Kibana, go to http://172.17.8.102:9200/_plugin/kibana3/index.html#/dashboard/file/logstash.json. The single access should show up in "EVENTS OVER TIME". 
 
-## Run the benchmark script
+#### Run the benchmark script
 
 In the sample_app repository, there is the bin directory which contains a script ```benchmark.rb```. It runs 8 threads in a loop against whatever URL is specified. This is simply no generate traffic against the app hence have results show up in Kibana. 
 
@@ -214,7 +226,7 @@ Accessing http://172.17.8.102
 loop 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25....
 ```
 
-## Observe accesses due to benchmark script in Kibana. 
+#### Observe accesses due to benchmark script in Kibana. 
 
 Again, access the URL http://172.17.8.102:9200/_plugin/kibana3/index.html#/dashboard/file/logstash.json and observe accesses showing up in the graph. If this script is allowed to run for a prolonged period, then there will be a good asmple of data to get a idea of what this example app does. 
 
