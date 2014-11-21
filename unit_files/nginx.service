@@ -4,8 +4,9 @@ Description=nginx
 [Service]
 EnvironmentFile=/etc/environment
 ExecStartPre=/usr/bin/docker pull capttofu/nginx
-ExecStart=/usr/bin/docker run --rm --name nginx -p 80:80 -e HOST_IP=${COREOS_PUBLIC_IPV4} capttofu/nginx
+ExecStart=/usr/bin/docker run --rm --name nginx -p 80:80 -e HOST_IP=${COREOS_PRIVATE_IPV4} capttofu/nginx
 ExecStop=/usr/bin/docker kill nginx
+ExecStop=/usr/bin/docker rm nginx
 
 [X-Fleet]
 X-Conflicts=nginx.service
