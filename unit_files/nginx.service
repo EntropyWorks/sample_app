@@ -10,3 +10,5 @@ ExecStop=/usr/bin/docker rm nginx
 
 [X-Fleet]
 X-Conflicts=nginx.service
+# GAH!
+# MachineMetadata="site=${COREOS_PUBLIC_IPV4}"
