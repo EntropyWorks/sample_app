@@ -6,6 +6,7 @@ EnvironmentFile=/etc/environment
 ExecStartPre=/usr/bin/docker pull capttofu/elasticsearch
 ExecStart=/usr/bin/docker run --rm --name elasticsearch -p 9200:9200 -e HOST_IP=0.0.0.0 capttofu/elasticsearch
 ExecStartPost=/usr/bin/etcdctl set /elasticsearch/host ${COREOS_PRIVATE_IPV4} 
+ExecStartPost=/usr/bin/etcdctl set /elasticsearch/hostpublic ${COREOS_PUBLIC_IPV4} 
 ExecStop=/usr/bin/docker kill elasticsearch
 ExecStopPost=/usr/bin/etcdctl rm /elasticsearch/host
 
