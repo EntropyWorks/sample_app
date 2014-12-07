@@ -1,0 +1,10 @@
+[Unit]
+Description=sinatra
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStartPre=/usr/bin/docker pull capttofu/benchmarkrb
+ExecStart=/usr/bin/docker run --name benchmark --rm -e HOST_IP=${COREOS_PRIVATE_IPV4} capttofu/benchmarkrb
+
+[X-Fleet]
+X-Conflicts=benchmark.service
