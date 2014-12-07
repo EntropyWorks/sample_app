@@ -3,10 +3,13 @@ Description=sinatra
 
 [Service]
 EnvironmentFile=/etc/environment
+ExecStartPre=/usr/bin/etcdctl set /app/title "ATG Demo Application"
 ExecStartPre=/usr/bin/docker pull capttofu/sinatra-with-logstash
 ExecStart=/usr/bin/docker run -rm --name sinatra-%i -p %i:5000 -e PORT=5000 -e HOST_IP=${COREOS_PRIVATE_IPV4} capttofu/sinatra-with-logstash
 ExecStartPost=/usr/bin/etcdctl set /app/server/%i ${COREOS_PRIVATE_IPV4}:%i
+ExecStop=/usr/bin/docker rm sinatra-%i
 ExecStopPost=/usr/bin/etcdctl rm /app/server/%i
+ExecStopPost=/usr/bin/etcdctl rm /app/title
 
 [X-Fleet]
 X-Conflicts=sinatra@%i.service
