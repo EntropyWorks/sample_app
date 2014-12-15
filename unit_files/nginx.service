@@ -12,5 +12,3 @@ ExecStopPost=/usr/bin/etcdctl rm /nginx/ipv4
 
 [X-Fleet]
 X-Conflicts=nginx.service
-# GAH!
-# MachineMetadata="site=${COREOS_PUBLIC_IPV4}"
